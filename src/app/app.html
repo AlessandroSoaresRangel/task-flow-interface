@@ -1,0 +1,10 @@
+<main>
+  <h1>Taskflow</h1>
+  <p>Tasks Completed: {{ completedCount() }}/{{ tasks().length }}</p>
+  <p>Tasks Pending: {{ pendingCount() }}/{{ tasks().length }}</p>
+
+  <app-task-form (taskCreated)="addTask($event)" />
+  <app-task-list [tasks]="tasks()" (completedChange)="ToggleTask($event)" />
+</main>
+
+<router-outlet />

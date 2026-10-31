@@ -1,0 +1,9 @@
+<section>
+  <h2>Task List</h2>
+
+  @for (task of tasks(); track task.id) {
+    <app-task-card [task]="task" (completedChange)="completedChange.emit($event)" />
+  } @empty {
+    <p class="no_tasks">No tasks available.</p>
+  }
+</section>
