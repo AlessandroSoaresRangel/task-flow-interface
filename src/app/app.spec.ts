@@ -369,7 +369,7 @@ describe('App', () => {
     expect(app.tasks().length).toBe(3);
   });
 
-  it('should click the edit button and update a task', async () => {
+  it('should click the edit button to fill the form', async () => {
     const fixture = TestBed.createComponent(App);
     const app = fixture.componentInstance;
     await fixture.whenStable();
@@ -394,5 +394,106 @@ describe('App', () => {
     )?.value;
 
     expect(descriptionInput).toBe('Description for Task 1');
+  });
+
+  it('should click the edit button and update a task in the form', async () => {
+    const fixture = TestBed.createComponent(App);
+    const app = fixture.componentInstance;
+    await fixture.whenStable();
+
+    const element = fixture.nativeElement as HTMLElement;
+
+    const editButton = element.querySelector<HTMLButtonElement>('app-task-card .update');
+    expect(editButton).not.toBeNull();
+
+    editButton!.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const titleInput = element.querySelector<HTMLInputElement>(
+      'app-task-form input[name="title"]',
+    ) as HTMLInputElement;
+    const descriptionInput = element.querySelector<HTMLTextAreaElement>(
+      'app-task-form textarea[name="description"]',
+    ) as HTMLTextAreaElement;
+    const submitButton = element.querySelector<HTMLButtonElement>(
+      'app-task-form button[type="submit"]',
+    ) as HTMLButtonElement;
+
+    expect(titleInput).not.toBeNull();
+    expect(descriptionInput).not.toBeNull();
+    expect(submitButton).not.toBeNull();
+
+    titleInput.value = 'Updated Task 1';
+    titleInput.dispatchEvent(new Event('input'));
+
+    descriptionInput.value = 'Updated Description for Task 1';
+    descriptionInput.dispatchEvent(new Event('input'));
+
+    submitButton.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const updatedTask = app.tasks().find((task) => task.id === 1);
+
+    expect(updatedTask).toMatchObject({
+      id: 1,
+      title: 'Updated Task 1',
+      description: 'Updated Description for Task 1',
+      completed: false,
+    });
+
+    expect(element.querySelectorAll('app-task-card')).toHaveLength(3);
+
+    const firstCard = element.querySelector('app-task-card');
+    expect(firstCard?.querySelector('h3')?.textContent).toContain('Updated Task 1');
+    expect(firstCard?.querySelector('p')?.textContent).toContain('Updated Description for Task 1');
+  });
+
+  it('should cancel the edit mode when the cancel button is clicked', async () => {
+    const fixture = TestBed.createComponent(App);
+    const app = fixture.componentInstance;
+    await fixture.whenStable();
+
+    const element = fixture.nativeElement as HTMLElement;
+
+    const editButton = element.querySelector<HTMLButtonElement>('app-task-card .update');
+    expect(editButton).not.toBeNull();
+
+    editButton!.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const cancelButton = element.querySelector<HTMLButtonElement>('app-task-form .cancel-edit');
+    expect(cancelButton).not.toBeNull();
+
+    const titleInput = element.querySelector<HTMLInputElement>(
+      'app-task-form input[name="title"]',
+    ) as HTMLInputElement;
+    const descriptionInput = element.querySelector<HTMLTextAreaElement>(
+      'app-task-form textarea[name="description"]',
+    ) as HTMLTextAreaElement;
+
+    expect(titleInput).not.toBeNull();
+    expect(descriptionInput).not.toBeNull();
+
+    titleInput.value = 'Updated Task 1';
+    titleInput.dispatchEvent(new Event('input'));
+
+    descriptionInput.value = 'Updated Description for Task 1';
+    descriptionInput.dispatchEvent(new Event('input'));
+
+    cancelButton!.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(titleInput.value).toBe('');
+    expect(descriptionInput.value).toBe('');
+
+    const firstCard = element.querySelector('app-task-card');
+    expect(firstCard?.querySelector('h3')?.textContent).toContain('Task 1');
+    expect(firstCard?.querySelector('p')?.textContent).toContain('Description for Task 1');
+
+    expect(app.editingTaskId()).toBeNull();
   });
 });

@@ -13,12 +13,15 @@ export class TaskForm {
   description = '';
   taskCreated = output<{ title: string; description: string }>();
   taskToEdit = input<Task | null>(null);
+  editCancelled = output<void>();
 
   constructor() {
     effect(() => {
       const task = this.taskToEdit();
 
       if (task === null) {
+        this.title = '';
+        this.description = '';
         return;
       }
 

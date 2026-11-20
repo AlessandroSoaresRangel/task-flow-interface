@@ -10,4 +10,7 @@
     [(ngModel)]="description"
   ></textarea>
   <button type="submit">Add Task</button>
+  @if (taskToEdit()) {
+    <button type="button" (click)="editCancelled.emit()" class="cancel-edit">Cancel Edit</button>
+  }
 </form>

@@ -3,7 +3,11 @@
   <p>Tasks Completed: {{ completedCount() }}/{{ tasks().length }}</p>
   <p>Tasks Pending: {{ pendingCount() }}/{{ tasks().length }}</p>
 
-  <app-task-form (taskCreated)="addTask($event)" [taskToEdit]="editingTask()" />
+  <app-task-form
+    (taskCreated)="saveTask($event)"
+    [taskToEdit]="editingTask()"
+    (editCancelled)="editingTaskId.set(null)"
+  />
 
   <button
     type="button"

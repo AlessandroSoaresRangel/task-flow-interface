@@ -98,4 +98,15 @@ export class App {
       tasks.map((task) => (task.id === id ? { ...task, ...updatedTask } : task)),
     );
   }
+
+  saveTask(taskData: Omit<Task, 'id' | 'completed'>) {
+    const editingTaskId = this.editingTaskId();
+
+    if (editingTaskId !== null) {
+      this.updateTask(editingTaskId, taskData);
+      this.editingTaskId.set(null);
+    } else {
+      this.addTask(taskData);
+    }
+  }
 }
