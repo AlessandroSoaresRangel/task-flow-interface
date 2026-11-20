@@ -76,4 +76,35 @@ describe('TaskCard', () => {
     button!.click();
     expect(emittedTaskId).toBe(1);
   });
+
+  it('should emit the ID of the task when the remove button is clicked', () => {
+    let emittedTaskId: number | undefined;
+
+    component.taskRemoved.subscribe((taskId: number) => {
+      emittedTaskId = taskId;
+    });
+
+    const element = fixture.nativeElement as HTMLElement;
+    const removeButton = element.querySelector('button.remove-button') as HTMLButtonElement;
+    expect(removeButton).not.toBeNull();
+
+    removeButton!.click();
+    expect(emittedTaskId).toBe(1);
+  });
+
+  it('should emit the Id of the task when the update button is clicked', () => {
+    let emittedTaskId: number | undefined;
+
+    component.editRequested.subscribe((taskId: number) => {
+      emittedTaskId = taskId;
+    });
+
+    const element = fixture.nativeElement as HTMLElement;
+
+    const updateButton = element.querySelector('button.update') as HTMLButtonElement;
+    expect(updateButton).not.toBeNull();
+
+    updateButton!.click();
+    expect(emittedTaskId).toBe(1);
+  });
 });

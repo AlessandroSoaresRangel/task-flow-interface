@@ -34,6 +34,35 @@ export class App {
 
   completedCount = computed(() => this.tasks().filter((task) => task.completed).length);
   pendingCount = computed(() => this.tasks().filter((task) => !task.completed).length);
+  visibleTasks = computed(() => {
+    switch (this.selectedFilter()) {
+      case 'completed':
+        return this.tasks().filter((task) => task.completed);
+      case 'pending':
+        return this.tasks().filter((task) => !task.completed);
+      default:
+        return this.tasks();
+    }
+  });
+  editingTask = computed(() => {
+    const editingTaskId = this.editingTaskId();
+
+    return this.tasks().find((task) => task.id === editingTaskId) ?? null;
+  });
+
+  removedTaskId = signal<number | null>(null);
+  selectedFilter = signal<'all' | 'completed' | 'pending'>('all');
+  filterMenuOpen = signal(false);
+  editingTaskId = signal<number | null>(null);
+
+  toggleFilterMenu() {
+    this.filterMenuOpen.update((open) => !open);
+  }
+
+  selectFilter(filter: 'all' | 'completed' | 'pending') {
+    this.selectedFilter.set(filter);
+    this.filterMenuOpen.set(false);
+  }
 
   ToggleTask(id: number) {
     this.tasks.update((tasks) =>
@@ -54,5 +83,19 @@ export class App {
       completed: false,
     };
     this.tasks.update((tasks) => [...tasks, newTask]);
+  }
+
+  removeTask(id: number) {
+    this.tasks.update((tasks) => tasks.filter((task) => task.id !== id));
+  }
+
+  updateTask(id: number, updatedTask: Omit<Task, 'id' | 'completed'>) {
+    if (!updatedTask.title.trim()) {
+      return;
+    }
+
+    this.tasks.update((tasks) =>
+      tasks.map((task) => (task.id === id ? { ...task, ...updatedTask } : task)),
+    );
   }
 }

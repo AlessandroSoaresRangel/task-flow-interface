@@ -10,8 +10,17 @@ import { Task } from '../../models/task.model';
 export class TaskCard {
   task = input.required<Task>();
   completedChange = output<number>();
+  taskRemoved = output<number>();
+  editRequested = output<number>();
 
   toggleCompleted() {
     this.completedChange.emit(this.task().id);
+  }
+
+  removeTask() {
+    this.taskRemoved.emit(this.task().id);
+  }
+  requestEdit() {
+    this.editRequested.emit(this.task().id);
   }
 }

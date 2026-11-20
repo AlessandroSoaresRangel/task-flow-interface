@@ -10,6 +10,7 @@ import { TaskCard } from '../task-card/task-card';
 })
 export class TaskList {
   tasks = input.required<Task[]>();
-
+  taskRemoved = output<number>();
   completedChange = output<number>();
+  editRequested = output<number>();
 }

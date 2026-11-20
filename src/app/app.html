@@ -3,8 +3,52 @@
   <p>Tasks Completed: {{ completedCount() }}/{{ tasks().length }}</p>
   <p>Tasks Pending: {{ pendingCount() }}/{{ tasks().length }}</p>
 
-  <app-task-form (taskCreated)="addTask($event)" />
-  <app-task-list [tasks]="tasks()" (completedChange)="ToggleTask($event)" />
+  <app-task-form (taskCreated)="addTask($event)" [taskToEdit]="editingTask()" />
+
+  <button
+    type="button"
+    (click)="toggleFilterMenu()"
+    class="filter-button"
+    [attr.aria-expanded]="filterMenuOpen()"
+  >
+    Filtrar
+  </button>
+
+  @if (filterMenuOpen()) {
+    <div class="filter-menu">
+      <button
+        type="button"
+        (click)="selectFilter('all')"
+        [class.active]="selectedFilter() === 'all'"
+        data-filter="all"
+      >
+        Sem Filtro
+      </button>
+      <button
+        type="button"
+        (click)="selectFilter('completed')"
+        [class.active]="selectedFilter() === 'completed'"
+        data-filter="completed"
+      >
+        Completas
+      </button>
+      <button
+        type="button"
+        (click)="selectFilter('pending')"
+        [class.active]="selectedFilter() === 'pending'"
+        data-filter="pending"
+      >
+        Pendentes
+      </button>
+    </div>
+  }
+
+  <app-task-list
+    [tasks]="visibleTasks()"
+    (completedChange)="ToggleTask($event)"
+    (taskRemoved)="removeTask($event)"
+    (editRequested)="editingTaskId.set($event)"
+  />
 </main>
 
 <router-outlet />

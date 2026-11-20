@@ -11,7 +11,11 @@
     }
   </span>
 
-  <button (click)="toggleCompleted()">
+  <button (click)="toggleCompleted()" class="toggle" type="button">
     {{ task().completed ? 'Mark as Not Completed' : 'Mark as Completed' }}
   </button>
+
+  <button (click)="removeTask()" class="remove-button" type="button">Remove Task</button>
+
+  <button (click)="requestEdit()" class="update" type="button">Edit Task</button>
 </article>
