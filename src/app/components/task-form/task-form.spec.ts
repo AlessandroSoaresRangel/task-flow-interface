@@ -193,4 +193,20 @@ describe('TaskForm', () => {
 
     expect(emittedData).toBeUndefined();
   });
+
+  it('should show save changes when editing the task', () => {
+    fixture.componentRef.setInput('taskToEdit', {
+      id: 1,
+      title: 'Old Title',
+      description: 'Old Description',
+      completed: false,
+    });
+    fixture.detectChanges();
+
+    const element = fixture.nativeElement as HTMLElement;
+
+    const submitButton = element.querySelector('button[type="submit"]') as HTMLButtonElement;
+    expect(submitButton).not.toBeNull();
+    expect(submitButton.textContent).toContain('Save Changes');
+  });
 });

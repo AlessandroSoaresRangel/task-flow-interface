@@ -9,7 +9,7 @@
     placeholder="Task Description"
     [(ngModel)]="description"
   ></textarea>
-  <button type="submit">Add Task</button>
+  <button type="submit">{{ taskToEdit() ? 'Save Changes' : 'Add Task' }}</button>
   @if (taskToEdit()) {
     <button type="button" (click)="editCancelled.emit()" class="cancel-edit">Cancel Edit</button>
   }
